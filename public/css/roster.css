@@ -1,0 +1,27 @@
+a {
+    color: #333;
+}
+
+body {
+    background: #333;
+}
+
+.card-block h4 {
+    text-align: center; 
+}
+
+.wrapper {
+    padding: 3rem;
+    background: #333;
+}
+
+h1 {
+    color: #fff;
+    text-align: center;
+    font-size: 4em;
+    padding: 0.2em;
+}
+
+span {
+    font-style: italic;
+}

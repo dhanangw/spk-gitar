@@ -1,0 +1,31 @@
+unscallopped bracing: https://www.martinguitar.com/media/4244/std_x_scalloped.png martin guitar
+scallopped bracing: https://www.martinguitar.com/media/4243/std_x_unscalloped.png martin guitar
+
+alternatif:
+yamaha-fg-340           : http://guitar-auctions.co.uk/wp-content/uploads/2014/05/lot0136.jpg
+yamaha-fg-340-back      : http://guitar-auctions.co.uk/wp-content/uploads/2014/05/lot0136-1.jpg
+yamaha-a1r              : https://kitarablogi.files.wordpress.com/2012/04/yamaha-a1r-e28093-full-front.jpg
+yamaha-1-a1r-back       : https://kitarablogi.files.wordpress.com/2012/04/yamaha-a1r-e28093-full-back.jpg
+cort-SFX-ME(OP)         : http://www.cortguitars.com/uFiles//product/157/model/SFX-ME(OP).png
+cort-AF510(OP)          : http://www.cortguitars.com//uFiles//product/105/model/AF510(OP).png
+cort-AF510(OP)-back     : https://cdn.shopify.com/s/files/1/1004/6034/products/Music440_Cort_AF510-NS_3_600x.jpg?v=1503584799
+cort-SFX-AB             : http://www.cortguitars.com/uFiles//product/155/model/SFX-AB.png
+cort-SFXAB-NAT          : http://bandwagonperth.co.uk/site/components/com_virtuemart/shop_image/product/Cort_SFX_AB_NAT_59d6a21bdf4d7.jpg
+cort-Earth-Grand        : http://www.cortguitars.com//uFiles//product/139/model/Earth-Grand.png
+cort-earth-grand-back   : https://www.theguitarstore.com.my/image/cache/catalog/Estore/Products%20By%20Brand/Cort/Earth%20Grand/cort%20earth%20grand%20bck-726x1000.png
+cort-AD810(BKS)         : http://www.cortguitars.com/uFiles//product/107/model/AD810(BKS).png
+cort-AD810(OP)          : http://www.cortguitars.com/uFiles//product/107/model/AD810(OP).png
+cort-Earth-300SSF-NAT   : http://assets.bmdstatic.com/assets/Data/image_product_zoom/CORT-Guitar-Acoustic-Earth-300SSF-NAT-Natural-3316106894-2017320105245.jpg
+cort-L450CL             : http://www.cortguitars.com/uFiles//product/133/model/L450C.png
+Taylor-114ce            : https://www.taylorguitars.com/sites/default/files/responsive-guitar-detail/Taylor-114ce-Walnut-fr-2017.png
+Taylor-114ce-back       : https://www.taylorguitars.com/sites/default/files/responsive-guitar-detail/Taylor-114ce-Walnut-bk-2017.png
+Taylor-BigBaby          : https://www.taylorguitars.com/sites/default/files/responsive-guitar-detail/Taylor-BBT-front-2017_1.png
+Taylor-BigBaby-back     : https://www.taylorguitars.com/sites/default/files/responsive-guitar-detail/Taylor-BBT-bk-2012.png
+yamaha-fs100c-black     : https://in.yamaha.com/en/files/1125430E54454D4CACCE7D4B60231467_12073_1782x4180_124dbccf58aabf6c04d5ba5413476afb.jpg
+yamaha-fs100c-natural   : https://in.yamaha.com/en/files/8A9009468FD14CAB9726381BB00E0992_12073_1519x4006_88e0b9028aa1b7b3e4948ff6b9124731.jpg
+yamaha-ac1r-back        : https://usa.yamaha.com/files/9779251445544D458EDEA6BE433CFF5C_12075_735x735_c6a49bfe90fae15b386ca1d1f7a000b6.jpg
+yamaha-ac1r-nat         : https://usa.yamaha.com/files/4D3AEE4C2E534C48BE225F3F9E3DC39B_12073_735x735_5115ce4dbdd605459006ed4dfe9f5621.jpg
+yamaha-ac1r-tbs         : https://usa.yamaha.com/files/19040A085A754585A958CE31D4E9F11E_12073_2684x7106_e1bce52c4f83f6d69a607e498a27af40.jpg
+yamaha-a1m-nat          : https://usa.yamaha.com/files/B7BFD4437D6641708716AED1B834748C_12073_735x735_3324c8e5f266b1a895fd1ef78715f570.jpg
+yamaha-a1m-tbs          : https://usa.yamaha.com/files/BB799490DFDD40098B422D029971B536_12073_2684x6707_380597d6c9ea67bba5635ea029e3e027.jpg
+yamaha-a1m-back         : https://usa.yamaha.com/files/CE3BE555C00D4FCE94569BE02AE170F7_12075_2684x6660_2d4aa04540519aefae0fbbf224fac761.jpg
