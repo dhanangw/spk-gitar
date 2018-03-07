@@ -58,6 +58,8 @@ class Guitars extends Model
         'keterangan',
         'tone',
         'images',
-        'highlight_image'
+        'highlight_image',
+        'perf_rating_harga',  
+        'perf_rating_kayu_body',    
      ];
 }

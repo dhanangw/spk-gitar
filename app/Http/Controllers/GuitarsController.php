@@ -2,23 +2,61 @@
 
 namespace App\Http\Controllers;
 
+use Illuminate\Http\Request;
 use Illuminate\Foundation\Bus\DispatchesJobs;
 use Illuminate\Routing\Controller as BaseController;
 use Illuminate\Foundation\Validation\ValidatesRequests;
 use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 use Excel;
 use App\Guitars;
+use App\FuzzyElectre;
 
 class GuitarsController extends BaseController
 {
     use AuthorizesRequests, DispatchesJobs, ValidatesRequests;
 
-    public function index() { 
-        $data = [
-            'guitars' => Guitars::all(),
+    public function home() { 
+        return view('welcome');
+    }
+
+    //the function below still needs fixed kriteria as parameters
+    public function ranking(Request $request) { 
+        //get guitars in the criteria range and set as array
+        $guitars = Guitars::select('perf_rating_harga', 'perf_rating_kayu_body')->get()->toArray();
+        
+        //get linguistic variables from form
+        $linguistics = [
+            $request->input('kualitas-kayu-bagian-body'),
+            $request->input('harga')
         ];
 
+        //send to Fuzzy Electre Class
+        $data = new FuzzyElectre($guitars, $linguistics);
+        //get result from fuzzy electre class
+        
+        //parse data to view
+    }
+
+    public function index() { 
+        $guitar = Guitars::all();
+        $data = [
+            'guitars' => $guitar,
+        ];
+
+
         return view('roster', $data);
+    }
+
+    public function view($id) { 
+        $gitar = Guitars::where('id', $id)->first();
+        $photo = explode(" | ", $gitar->images);
+
+        $data = [
+            'gitar' => $gitar,
+            'photos' => $photo
+        ];
+
+        return view('viewDetails', $data);
     }
 
     public function choose() { 
@@ -41,6 +79,7 @@ class GuitarsController extends BaseController
             ]);
         }
     }
+
 
     public function populateDatabase () {
         $data = Excel::load("\Book1.xlsx", function($reader) {})->get();
@@ -97,7 +136,9 @@ class GuitarsController extends BaseController
                     'sumber'                    => $value->sumber,
                     'keterangan'                => $value->keterangan,
                     'tone'                      => $value->tone, 
-                    'images'                    => $value->images,  
+                    'images'                    => $value->images,
+                    'perf_rating_harga'         => $value->perfratinghargayangterjangkau,  
+                    'perf_rating_kayu_body'     => $value->perfratingkualitaskayubody,    
                 ]);
 
                 if (empty($data)) {

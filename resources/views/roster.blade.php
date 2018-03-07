@@ -13,7 +13,7 @@
     <div class="wrapper">
         <div class="card-columns">
             @foreach ($guitars as $guitar)
-            <a href="#">
+            <a href="{{url('/'.$guitar->id.'/view')}}">
                 <div class="card">
                     <img class="card-img-top img-fluid" src="{{ URL::asset('img/guitars/'.$guitar->highlight_image.'') }}" alt="Card image cap">
                     <div class="card-block">

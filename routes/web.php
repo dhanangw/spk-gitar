@@ -11,10 +11,12 @@
 |
 */
 
-Route::get('/', function () {
-    return view('welcome');
-});
+Route::get('/', 'GuitarsController@home');
+Route::get('/choose', 'GuitarsController@choose');
+Route::get('/{id}/view', 'GuitarsController@view');
+Route::get('/roster', 'GuitarsController@index');
+Route::post('/ranking', 'GuitarsController@ranking');
+
+//POPULATE DATABASE
 Route::get('/highlight-image', 'GuitarsController@addHighlightImage');
 Route::get('/populate-database', 'GuitarsController@populateDatabase');
-Route::get('/choose', 'GuitarsController@choose');
-Route::get('/roster', 'GuitarsController@index');

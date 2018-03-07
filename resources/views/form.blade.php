@@ -20,90 +20,31 @@
             </div>
             <div class="contact">
                 <h3>Masukkan tingkat kepentingan kriteria anda disini:</h3>
-                <form action="#">
+                <form action="{{ url('/ranking') }}" method="POST">
+                    <input type="hidden" name="_token" value="{!! csrf_token() !!}">
                     <p class="full">
-                        <label>Body Size</label>
-                        <select class="form-control" id="sel1">
-                            <option>Sangat Penting</option>
-                            <option>Penting</option>
-                            <option>Biasa Saja</option>
-                            <option>Tidak Penting</option>
-                            <option>Sangat Tidak Penting</option>
+                        <label>Kualitas Kayu Bagian Body</label>
+                        <select class="form-control" id="sel1" name="kualitas-kayu-bagian-body" required>
+                            <option value="very high">Sangat Penting</option>
+                            <option value="high">Penting</option>
+                            <option value="medium">Biasa Saja</option>
+                            <option value="low">Tidak Penting</option>
+                            <option value="very low">Sangat Tidak Penting</option>
                         </select>
                     </p>
+                    
                     <p class="full">
-                        <label>Top Wood</label>
-                        <select class="form-control" id="sel1">
-                            <option>Sangat Penting</option>
-                            <option>Penting</option>
-                            <option>Biasa Saja</option>
-                            <option>Tidak Penting</option>
-                            <option>Sangat Tidak Penting</option>
+                        <label>Harga yang Murah</label>
+                        <select class="form-control" id="sel1" name="harga" required>
+                            <option value="very high">Sangat Penting</option>
+                            <option value="high">Penting</option>
+                            <option value="medium">Biasa Saja</option>
+                            <option value="low">Tidak Penting</option>
+                            <option value="very low">Sangat Tidak Penting</option>
                         </select>
                     </p>
-                    <p class="full">
-                        <label>Back & Sides Wood</label>
-                        <select class="form-control" id="sel1">
-                            <option>Sangat Penting</option>
-                            <option>Penting</option>
-                            <option>Biasa Saja</option>
-                            <option>Tidak Penting</option>
-                            <option>Sangat Tidak Penting</option>
-                        </select>
-                    </p>
-                    <p class="full">
-                        <label>Bracing Pattern</label>
-                        <select class="form-control" id="sel1">
-                            <option>Sangat Penting</option>
-                            <option>Penting</option>
-                            <option>Biasa Saja</option>
-                            <option>Tidak Penting</option>
-                            <option>Sangat Tidak Penting</option>
-                        </select>
-                    </p>
-                    <p class="full">
-                        <label>Playability</label>
-                        <select class="form-control" id="sel1">
-                            <option>Sangat Penting</option>
-                            <option>Penting</option>
-                            <option>Biasa Saja</option>
-                            <option>Tidak Penting</option>
-                            <option>Sangat Tidak Penting</option>
-                        </select>
-                    </p>
-                    <p class="full">
-                        <label>Tampilan Gitar</label>
-                        <select class="form-control" id="sel1">
-                            <option>Sangat Penting</option>
-                            <option>Penting</option>
-                            <option>Biasa Saja</option>
-                            <option>Tidak Penting</option>
-                            <option>Sangat Tidak Penting</option>
-                        </select>
-                    </p>
-                    <p class="full">
-                        <label>Harga</label>
-                        <select class="form-control" id="sel1">
-                            <option>Sangat Penting</option>
-                            <option>Penting</option>
-                            <option>Biasa Saja</option>
-                            <option>Tidak Penting</option>
-                            <option>Sangat Tidak Penting</option>
-                        </select>
-                    </p>
-                    <p class="full">
-                        <label>Gaya Bermain</label>
-                        <select class="form-control" id="sel1">
-                            <option>Sangat Penting</option>
-                            <option>Penting</option>
-                            <option>Biasa Saja</option>
-                            <option>Tidak Penting</option>
-                            <option>Sangat Tidak Penting</option>
-                        </select>
-                    </p>
-                    <p class="full">
-                        <button>Submit</button>
-                    </p>
+                    
+                    <p class="full"><input type="submit" value="Submit"></p>
                 </form>
             </div>
         </div>
