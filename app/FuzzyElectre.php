@@ -4,10 +4,10 @@
     {
         private $dataA = array(); 
         private $dataB = array(); 
+        public $ranking;
 
-        /**
-         * constructor
-         *  initiate data by assign performanceRating and criteria to array
+        /**constructor
+         * initiate data by assign performanceRating and criteria to array
          *PARAM
          *  $performanceRating = array of performanceRating
          *  $linguistic = array of linguistic variable of criterias
@@ -35,6 +35,14 @@
             
             $normalizedFuzzyDecisionMatrix = $this->normalizedFuzzyDesicionMatrix($fuzzyDecisionMatrix,$dataA, $dataB);
             $weightedNormalizedFuzzyDecisionMatrix = $this->weightedNormalizedFuzzyDecisionMatrix($normalizedFuzzyDecisionMatrix, $criteriaWeight);
+            $concordanceMatrix = $this->concordanceMatrix($weightedNormalizedFuzzyDecisionMatrix, $dataA, $dataB);
+            $concordanceLevel = $this->concordanceLevel($concordanceMatrix);
+            $discordanceMatrix = $this->discordanceMatrix($weightedNormalizedFuzzyDecisionMatrix, $dataA, $dataB);
+            $discordanceLevel = $this->discordanceLevel($discordanceMatrix);
+            $matrixBooleanB = $this->matrixBooleanB($concordanceMatrix, $concordanceLevel);
+            $matrixBooleanH = $this->matrixBooleanH($discordanceMatrix, $discordanceLevel);
+            $matriksGlobalZ = $this->matrixGlobalZ($matrixBooleanB, $matrixBooleanH);
+            $this->ranking = $this->getRanking($matriksGlobalZ);
         }
 
         /**tfnRating
@@ -197,6 +205,8 @@
          * criteriaWeight = linguistic assesment of criteria's weight : array[] string
          *RETURNS
          * weightedNormalizedFuzzyDecisionMatrix = weighted normalize fuzzy decision matrix : array[][][] float
+         * 
+         * STEP 8 FORM WEIGHTED NORMALIZED FUZZY DECISION MATRIX
          */
         function weightedNormalizedFuzzyDecisionMatrix($normalizedFuzzyDecisionMatrix, $criteriaWeight)
         {
@@ -217,9 +227,343 @@
             return $weightedNormalizedFuzzyDecisionMatrix;
         }
 
-        function hamming_distance ()
+        /**hammingDistance
+         * calculate hamming distance between 2 criteria (only works for triangular fuzzy)
+         *PARAM
+         * $alternative1 = a component of weighted fuzzy decision matrix that corresponds to 1 alternative
+         * $alternative2 = a component of weighted fuzzy decision matrix that corresponds to 1 alternative
+         *RETURNS
+         * array[] 
+         *  $kiri = value hamming distance array on left side : float
+         *  $kanan = value hamming distance array on right side : float
+         *  $oo = determines whether the distance is 0 : string
+         *  $concordanceSet = determines whether the hamming distance array belongs to concordance set : string
+         *  $discordanceSet = determines whether the hamming distance array belongs to discordance set : string
+         * 
+         * STEP 9 CALCULATE THE HAMMING DISTANCE
+         */
+        function hammingDistance ($alternative1, $alternative2)
         {
+            // check each criteria whether it belongs to concordance set, discordance set or 0-0
+            if (($alternative1[0] == $alternative2[0]) && ($alternative1[1] == $alternative2[1]) && ($alternative1[2] == $alternative2[2])) {
+                //if 0-0 -> kiri and kanan value = 0
+                $kanan = 0;
+                $kiri = 0;
+                $oo = "yes";
+                $concordanceSet = "no";
+                $discordanceSet = "no";
+            }
+            if (($alternative1[0] < $alternative2[0]) && ($alternative1[1] < $alternative2[1]) && ($alternative1[2] < $alternative2[2])) {
+                //  if discordance set -> value kanan dihitung pakai rumus, value kiri = 0
+                $kiri = abs(abs($alternative1[2]-$alternative2[0])*abs($alternative1[2]-$alternative2[0])/abs($alternative2[1]-$alternative2[0]+$alternative1[2]-$alternative1[1]))/2;
+                $kanan = 0;
+                $oo = "no";
+                $concordanceSet = "no";
+                $discordanceSet = "yes";
+                
+            } if (($alternative1[0] > $alternative2[0]) && ($alternative1[1] > $alternative2[1]) && ($alternative1[2] > $alternative2[2])) {
+                //  if concordance set -> value kiri dihitung pakai rumus, value kanan = 0
+                $kiri = 0;
+                $kanan =  abs(abs($alternative1[2]-$alternative2[0])*abs($alternative1[2]-$alternative2[0])/abs($alternative2[1]-$alternative2[0]+$alternative1[2]-$alternative1[1]))/2;
+                $oo = "no";
+                $concordanceSet = "yes";
+                $discordanceSet = "no";
+            }
 
+            return(array('kiri' => $kiri, 'kanan' => $kanan, 'concordanceSet' => $concordanceSet, 'discordanceSet' => $discordanceSet, 'oo' => $oo));      
+        }
+
+        /**concordanceMatrix
+         * form concordance matrix (only works for triangular fuzzy and 2 criterias)
+         *PARAM
+         * $weightedNormalizedFuzzyDecisionMatrix = weighted normalized fuzzy decision matrix
+         * $alternative = all alternative considered
+         * $criteriaWeight = linguistic assesment of alternative in a criteria
+         *RETURNS
+         * $concordanceMatrix = concordance matrix
+         * 
+         * STEP 10 FORM THE CONCORDANCE MATRIX
+         */
+        function concordanceMatrix($weightedNormalizedFuzzyDecisionMatrix, $alternative, $criteriaWeight)
+        {
+            $concordanceMatrix = array();
+            $hamming1 = array();
+            $hamming2 = array();
+
+            //get TFN criteria
+            foreach ($criteriaWeight as $key => $value) {
+                $criteriaWeight[$key] = $this->tfnCriteria($value);
+            }
+        
+            //calculate hamming distance of alternatives in all criteria
+            foreach ($alternative as $keyAlternative => $valueAlternative) {
+                for ($i=0; $i < count($alternative); $i++) { 
+                    if ($i <= $keyAlternative) {
+                        $hamming1[$keyAlternative][$i] = ["-"];
+                        $hamming2[$keyAlternative][$i] = ["-"];
+                    } else {
+                        $hamming1[$keyAlternative][$i] = $this->hammingDistance($weightedNormalizedFuzzyDecisionMatrix[$keyAlternative][0], $weightedNormalizedFuzzyDecisionMatrix[$i][0]);
+                        $hamming2[$keyAlternative][$i] = $this->hammingDistance($weightedNormalizedFuzzyDecisionMatrix[$keyAlternative][1], $weightedNormalizedFuzzyDecisionMatrix[$i][1]);
+                    }
+                }
+            }
+            // dd($hamming1, $hamming2);
+            // dd($hamming1[25][24], $hamming2[25][24]);
+            // dd($hamming1[24][25], $hamming2[24][25]);
+            //form the concordance matrix
+            foreach ($alternative as $keyAlternative => $value) {
+                for ($i=0; $i < count($alternative); $i++) {
+                    if ($i == $keyAlternative) { //alternatives are same
+                        $concordanceMatrix[$keyAlternative][$i] = ["-","-","-"];
+                    }  else {
+                        $tempConcordance = array(0,0,0);
+                        //get which criteria(s) that are in the concordance set
+                        if ( implode($hamming1[$keyAlternative][$i])  !== "-" && implode($hamming2[$keyAlternative][$i] ) !== "-" ) {
+                            if ($hamming1[$keyAlternative][$i]['concordanceSet'] === "yes" || $hamming1[$keyAlternative][$i]['oo'] === "yes") {
+                                $tempConcordance = array($tempConcordance[0] + $criteriaWeight[0][0], $tempConcordance[1] + $criteriaWeight[0][1], $tempConcordance[2] + $criteriaWeight[0][2]);   
+                            }
+                            if ($hamming2[$keyAlternative][$i]['concordanceSet'] === "yes" || $hamming2[$keyAlternative][$i]['oo'] === "yes") {
+                                $tempConcordance = array($tempConcordance[0] + $criteriaWeight[1][0], $tempConcordance[1] + $criteriaWeight[1][1], $tempConcordance[2] + $criteriaWeight[1][2]);   
+                            }
+                        } else {
+                            if ($hamming1[$i][$keyAlternative]['concordanceSet'] === "no")  {
+                                $tempConcordance = [$tempConcordance[0] + $criteriaWeight[0][0], $tempConcordance[1] + $criteriaWeight[0][1], $tempConcordance[2] + $criteriaWeight[0][2] ];
+                            }
+                            if ($hamming2[$i][$keyAlternative]['concordanceSet'] === "no") {
+                                $tempConcordance = [$tempConcordance[0] + $criteriaWeight[1][0], $tempConcordance[1] + $criteriaWeight[1][1], $tempConcordance[2] + $criteriaWeight[1][2] ];
+                            }
+                        }
+                        $concordanceMatrix[$keyAlternative][$i] = $tempConcordance;
+                    }
+                }
+            }
+            
+            return $concordanceMatrix ;
+        }
+
+        /**discordanceMatrix
+         * form the discordance matrix
+         *PARAMS
+         * $weightedNormalizedFuzzyDecisionMatrix = weighted normalized fuzzy decision matrix
+         * $alternative = all alternative considered
+         * $criteriaWeight = linguistic assesment of alternative in a criteria
+         *RETURNS
+         * $discordanceMatrix = discordance matrix
+         * 
+         * STEP 11 FORM THE DISCORDANCE MATRIX
+         */
+        function discordanceMatrix($weightedNormalizedFuzzyDecisionMatrix, $alternative, $criteriaWeight)
+        {
+            $discordanceMatrix = array();
+            $hamming1 = array();
+            $hamming2 = array();
+
+            //get TFN criteria
+            foreach ($criteriaWeight as $key => $value) {
+                $criteriaWeight[$key] = $this->tfnCriteria($value);
+            }
+        
+            //calculate hamming distance of alternatives in all criteria
+            foreach ($alternative as $keyAlternative => $valueAlternative) {
+                for ($i=0; $i < count($alternative); $i++) { 
+                    if ($i <= $keyAlternative) {
+                        $hamming1[$keyAlternative][$i] = ["-"];
+                        $hamming2[$keyAlternative][$i] = ["-"];
+                    } else {
+                        $hamming1[$keyAlternative][$i] = $this->hammingDistance($weightedNormalizedFuzzyDecisionMatrix[$keyAlternative][0], $weightedNormalizedFuzzyDecisionMatrix[$i][0]);
+                        $hamming2[$keyAlternative][$i] = $this->hammingDistance($weightedNormalizedFuzzyDecisionMatrix[$keyAlternative][1], $weightedNormalizedFuzzyDecisionMatrix[$i][1]);
+                    }
+                }
+            }
+        
+            // form the discordance matrix
+            foreach ($alternative as $keyAlternative => $value) {
+                for ($i=0; $i < count($alternative); $i++) {
+                    if ($i == $keyAlternative) { //alternatives are same
+                        $discordanceMatrix[$keyAlternative][$i] = "-";
+                    } else {
+                        if ( implode($hamming1[$keyAlternative][$i])  !== "-" && implode($hamming2[$keyAlternative][$i] ) !== "-" ) {
+                            if ( max(abs($hamming1[$keyAlternative][$i]['kiri'] - $hamming1[$keyAlternative][$i]['kanan']), abs($hamming2[$keyAlternative][$i]['kiri'] - $hamming2[$keyAlternative][$i]['kanan'])) == 0 ) {
+                                $discordanceMatrix[$keyAlternative][$i] = 0;
+                            } else {
+                                $discordanceMatrix[$keyAlternative][$i] = max(($hamming1[$keyAlternative][$i]['discordanceSet'] == "yes" ) ? abs($hamming1[$keyAlternative][$i]['kiri'] - $hamming1[$keyAlternative][$i]['kanan'])  : 0,  ($hamming2[$keyAlternative][$i]['discordanceSet'] == "yes") ? abs($hamming2[$keyAlternative][$i]['kiri'] - $hamming2[$keyAlternative][$i]['kanan'])  : 0  ) / max(abs($hamming1[$keyAlternative][$i]['kiri'] - $hamming1[$keyAlternative][$i]['kanan']), abs($hamming2[$keyAlternative][$i]['kiri'] - $hamming2[$keyAlternative][$i]['kanan'])) ;   
+                            }
+                        } else {
+                            if ( max(abs($hamming1[$i][$keyAlternative]['kiri'] - $hamming1[$i][$keyAlternative]['kanan']), abs($hamming2[$i][$keyAlternative]['kiri'] - $hamming2[$i][$keyAlternative]['kanan'])) == 0) {
+                                $discordanceMatrix[$keyAlternative][$i] = 0;
+                            } else {
+                                $discordanceMatrix[$keyAlternative][$i] = max(($hamming1[$i][$keyAlternative]['discordanceSet'] == "no" ) ? abs($hamming1[$i][$keyAlternative]['kiri'] - $hamming1[$i][$keyAlternative]['kanan'])  : 0,  ($hamming2[$i][$keyAlternative]['discordanceSet'] == "no") ? abs($hamming2[$i][$keyAlternative]['kiri'] - $hamming2[$i][$keyAlternative]['kanan'])  : 0  ) / max(abs($hamming1[$i][$keyAlternative]['kiri'] - $hamming1[$i][$keyAlternative]['kanan']), abs($hamming2[$i][$keyAlternative]['kiri'] - $hamming2[$i][$keyAlternative]['kanan'])) ; 
+                            }
+                        }
+                    }   
+                }
+            }
+            return $discordanceMatrix;
+        }
+
+        /**concordanceLevel
+         * calculate the concordance level of a concordance matrix
+         *PARAM
+         * $concordanceMatrix = concordance matrix
+         *RETURNS
+         * $concordanceLevel = concordance level : array[] float
+         * 
+         */
+        function concordanceLevel ($concordanceMatrix)
+        {   
+            $concordanceLevel = array();
+            $kiri = array();
+            $tengah = array();
+            $kanan = array();
+            
+            foreach ($concordanceMatrix as $concordanceKey => $concordanceValue) {
+                foreach ($concordanceValue as $alternativeKey => $alternativeValue) {
+                    array_push($kiri, $concordanceMatrix[$concordanceKey][$alternativeKey][0]);
+                    array_push($tengah, $concordanceMatrix[$concordanceKey][$alternativeKey][1]);
+                    array_push($kanan, $concordanceMatrix[$concordanceKey][$alternativeKey][2]);
+                }
+            }
+            
+            $kiri = array_sum($kiri) / (count($kiri)-count($concordanceMatrix));
+            $kanan = array_sum($kanan) / (count($kanan)-count($concordanceMatrix));
+            $tengah = array_sum($tengah) / (count($tengah)-count($concordanceMatrix));
+            
+            $concordanceLevel = ['kiri' => $kiri, 'tengah' => $tengah, 'kanan' => $kanan];
+            
+            return $concordanceLevel;
+        }
+        
+        /**discordanceLevel
+         * calculate the discordance level of a concordance matrix
+         *PARAM
+         * $discordanceMatrix =  discordance matrix
+         *RETURNS
+         * $ discordanceLevel =  discordance level : float
+         * 
+         */
+        function discordanceLevel ($discordanceMatrix)
+        {
+            $discordanceLevel = 0;
+            $count = 0;
+
+            foreach ($discordanceMatrix as $discordanceKey => $discordanceValue) {
+                foreach ($discordanceValue as $alternativeKey => $alternativeValue) {
+                    if (is_numeric($discordanceMatrix[$discordanceKey][$alternativeKey])) {
+                        $discordanceLevel = $discordanceLevel + $discordanceMatrix[$discordanceKey][$alternativeKey];
+                        $count = $count + 1;
+                    }
+                }
+            }
+
+            $discordanceLevel = $discordanceLevel / $count;
+            return $discordanceLevel;
+        }
+        
+        /**matrixBooleanB
+         * form the Boolean B Matrix
+         *PARAMS
+         * $concordanceMatrix = concordance matrix : array[][][] float
+         * $concordanceLevel = concordance level : array [] float
+         *RETURNS
+         * $matrixBooleanB = boolean b matrix : array[][] int
+         * 
+         * STEP 12 FORM THE BOOLEAN B AND H MATRICES
+         */
+        function matrixBooleanB($concordanceMatrix, $concordanceLevel)
+        {
+            $matrixBooleanB = array();
+            
+            foreach ($concordanceMatrix as $concordanceKey => $concordanceValue) {
+                foreach ($concordanceValue as $alternativeKey => $alternativeValue) {
+                    if ($alternativeValue === ["-","-","-"]) {
+                        $matrixBooleanB[$concordanceKey][$alternativeKey] = "-";
+                    } else {
+                        if ($alternativeValue[0] > $concordanceLevel['kiri'] && $alternativeValue[1] > $concordanceLevel['tengah'] && $alternativeValue[2] > $concordanceLevel['kanan']) {
+                            $matrixBooleanB[$concordanceKey][$alternativeKey] = 1;
+                        } else {
+                            $matrixBooleanB[$concordanceKey][$alternativeKey] = 0;
+                        }
+                    }
+                }
+            }
+
+            return $matrixBooleanB;
+        }
+
+        /**matrixBooleanH
+         * form the Boolean H Matrix
+         *PARAMS
+         * $discordanceMatrix = discordance matrix : array[][][] float
+         * $discordanceLevel = discordance level : array [] float
+         *RETURNS
+         * $matrixBooleanH = boolean H matrix : array[][] int
+         * 
+         * STEP 12 FORM THE BOOLEAN B AND H MATRICES
+         */
+        function matrixBooleanH($discordanceMatrix, $discordanceLevel)
+        {
+            $matrixBooleanH = array();
+            
+            // dd($discordanceMatrix[26][39]);
+            foreach ($discordanceMatrix as $discordanceKey => $discordanceValue) {
+                foreach ($discordanceValue as $alternativeKey => $alternativeValue) {
+                    if ($alternativeValue === "-") {
+                        $matrixBooleanH[$discordanceKey][$alternativeKey] = "-";
+                    } else {
+                        if ($alternativeValue > $discordanceLevel) {
+                            $matrixBooleanH[$discordanceKey][$alternativeKey] = 0;
+                        } elseif ($alternativeValue < $discordanceLevel) {
+                            $matrixBooleanH[$discordanceKey][$alternativeKey] = 1;
+                        }
+                    }
+                }
+            }
+            return $matrixBooleanH;
+        }
+        
+        /**matrixGlobalZ
+         * form the global z matrix
+         *PARAMS
+         * $matrixBooleanB = boolean b matrix : array[][] float
+         * $matrixBooleanH = boolean h matrix : array[][] float
+         *RETURNS
+         * $matrixGlobalZ : global matrix z : array[][]
+         */
+        function matrixGlobalZ($matrixBooleanB, $matrixBooleanH)
+        {
+            $matrixGlobalZ = array();
+
+            foreach ($matrixBooleanB as $keyAlternative => $alternativeValue) {
+                foreach ($alternativeValue as $key => $value) {
+                    if ($value === "-") {
+                        $matrixGlobalZ[$keyAlternative][$key] = "-";
+                    } else {
+                        $matrixGlobalZ[$keyAlternative][$key] = $matrixBooleanB[$keyAlternative][$key] * $matrixBooleanH[$keyAlternative][$key];
+                    }
+                }
+            }
+            return $matrixGlobalZ;
+        }
+
+        /**getRanking
+         * ranks the alternatives according to global matrix z
+         *PARAMS
+         * $matrixGlobalZ = global matrix z : array[][] float
+         *RETURN
+         * $ranking = 5 best alternatives : array[] int
+         */
+        function getRanking($matrixGlobalZ) 
+        {
+            $ranking = array();
+
+            foreach ($matrixGlobalZ as $key => $value) {
+                $unsorted[$key] = array("value" => array_sum($value));
+            }
+            // dd($unsorted);
+            arsort($unsorted);
+            $ranking = array_slice($unsorted,0,5, true);
+
+            return $ranking;
         }
 
     }

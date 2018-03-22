@@ -33,7 +33,7 @@ class GuitarsController extends BaseController
         //send to Fuzzy Electre Class
         $data = new FuzzyElectre($guitars, $linguistics);
         //get result from fuzzy electre class
-        
+        dd($data->ranking);
         //parse data to view
     }
 
