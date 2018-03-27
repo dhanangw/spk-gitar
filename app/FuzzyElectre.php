@@ -25,7 +25,6 @@
                 $dataA[$key][1]= $performanceRating[$key]['perf_rating_kayu_body'];
             }
             
-
             //assign criteria weight variable of each criteria to an array
             foreach ($criteriaWeight as $key => $value) {    
                 $dataB[$key]= $criteriaWeight[$key];
@@ -43,6 +42,8 @@
             $matrixBooleanH = $this->matrixBooleanH($discordanceMatrix, $discordanceLevel);
             $matriksGlobalZ = $this->matrixGlobalZ($matrixBooleanB, $matrixBooleanH);
             $this->ranking = $this->getRanking($matriksGlobalZ);
+
+            
         }
 
         /**tfnRating
@@ -58,27 +59,27 @@
         function tfnRating ($linguistic)
         {   
             switch ($linguistic) {
-                case 'very poor':
+                case "very poor":
                     $value = [0.0, 0.0, 2.5];
                     return $value;
                     break;
                 
-                case 'poor':
+                case "poor":
                     $value = [0.0, 2.5, 5.0];
                     return $value;
                     break;
 
-                case 'fair':
+                case "fair":
                     $value = [2.5, 5.0, 7.5];
                     return $value;
                     break;
                 
-                case 'good':
+                case "good":
                     $value = [5.0, 7.5, 10.0];
                     return $value;
                     break;
                 
-                case 'very good':
+                case "very good":
                     $value = [7.5, 10.0, 10.0];
                     return $value;
                     break;
@@ -97,27 +98,27 @@
         function tfnCriteria ($linguistic)
         {   
             switch ($linguistic) {
-                case 'very low':
+                case "very low":
                     $value = [0.0, 0.0, 0.25];
                     return $value;
                     break;
                 
-                case 'low':
+                case "low":
                     $value = [0.0, 0.25, 0.50];
                     return $value;
                     break;
 
-                case 'medium':
+                case "medium":
                     $value = [0.25, 0.50, 0.75];
                     return $value;
                     break;
                 
-                case 'high':
+                case "high":
                     $value = [0.50, 0.75, 1.0];
                     return $value;
                     break;
                 
-                case 'very high':
+                case "very high":
                     $value = [0.75, 1.0, 1.0];
                     return $value;
                     break;
@@ -216,7 +217,7 @@
             foreach ($criteriaWeight as $key => $value) {
                 $criteriaWeight[$key] = $this->tfnCriteria($criteriaWeight[$key]);
             }
-
+            
             for ($criteria=0; $criteria < count($criteriaWeight); $criteria++) { 
                 foreach ($normalizedFuzzyDecisionMatrix as $keyAlternative => $alternative) {
                     foreach ($alternative[$criteria] as $key => $value) {
@@ -244,30 +245,39 @@
          */
         function hammingDistance ($alternative1, $alternative2)
         {
-            // check each criteria whether it belongs to concordance set, discordance set or 0-0
-            if (($alternative1[0] == $alternative2[0]) && ($alternative1[1] == $alternative2[1]) && ($alternative1[2] == $alternative2[2])) {
-                //if 0-0 -> kiri and kanan value = 0
-                $kanan = 0;
-                $kiri = 0;
-                $oo = "yes";
-                $concordanceSet = "no";
-                $discordanceSet = "no";
+            if (($alternative1[0] <= $alternative2[0]) && ($alternative1[1] <= $alternative2[1]) && ($alternative1[2] <= $alternative2[2])) {
+                if (($alternative1[0] == $alternative2[0]) && ($alternative1[1] == $alternative2[1]) && ($alternative1[2] == $alternative2[2])) {
+                    //if 0-0 -> kiri and kanan value = 0
+                    $kanan = 0;
+                    $kiri = 0;
+                    $oo = "yes";
+                    $concordanceSet = "no";
+                    $discordanceSet = "no";
+                } else {
+                    $kiri = abs(abs($alternative1[2]-$alternative2[0])*abs($alternative1[2]-$alternative2[0])/abs($alternative2[1]-$alternative2[0]+$alternative1[2]-$alternative1[1]))/2;
+                    $kanan = 0;
+                    $oo = "no";
+                    $concordanceSet = "no";
+                    $discordanceSet = "yes";
+                }
             }
-            if (($alternative1[0] < $alternative2[0]) && ($alternative1[1] < $alternative2[1]) && ($alternative1[2] < $alternative2[2])) {
-                //  if discordance set -> value kanan dihitung pakai rumus, value kiri = 0
-                $kiri = abs(abs($alternative1[2]-$alternative2[0])*abs($alternative1[2]-$alternative2[0])/abs($alternative2[1]-$alternative2[0]+$alternative1[2]-$alternative1[1]))/2;
-                $kanan = 0;
-                $oo = "no";
-                $concordanceSet = "no";
-                $discordanceSet = "yes";
-                
-            } if (($alternative1[0] > $alternative2[0]) && ($alternative1[1] > $alternative2[1]) && ($alternative1[2] > $alternative2[2])) {
-                //  if concordance set -> value kiri dihitung pakai rumus, value kanan = 0
-                $kiri = 0;
-                $kanan =  abs(abs($alternative1[2]-$alternative2[0])*abs($alternative1[2]-$alternative2[0])/abs($alternative2[1]-$alternative2[0]+$alternative1[2]-$alternative1[1]))/2;
-                $oo = "no";
-                $concordanceSet = "yes";
-                $discordanceSet = "no";
+            // check each criteria whether it belongs to concordance set, discordance set or 0-0
+            if (($alternative1[0] >= $alternative2[0]) && ($alternative1[1] >= $alternative2[1]) && ($alternative1[2] >= $alternative2[2])) {
+                if (($alternative1[0] == $alternative2[0]) && ($alternative1[1] == $alternative2[1]) && ($alternative1[2] == $alternative2[2])) {
+                    //if 0-0 -> kiri and kanan value = 0
+                        $kanan = 0;
+                    $kiri = 0;
+                    $oo = "yes";
+                    $concordanceSet = "no";
+                    $discordanceSet = "no";
+                } else {
+                    //  if concordance set -> value kiri dihitung pakai rumus, value kanan = 0
+                    $kiri = 0;
+                    $kanan =  abs(abs($alternative1[2]-$alternative2[0])*abs($alternative1[2]-$alternative2[0])/abs($alternative2[1]-$alternative2[0]+$alternative1[2]-$alternative1[1]))/2;
+                    $oo = "no";
+                    $concordanceSet = "yes";
+                    $discordanceSet = "no";
+                }
             }
 
             return(array('kiri' => $kiri, 'kanan' => $kanan, 'concordanceSet' => $concordanceSet, 'discordanceSet' => $discordanceSet, 'oo' => $oo));      
@@ -307,9 +317,8 @@
                     }
                 }
             }
-            // dd($hamming1, $hamming2);
-            // dd($hamming1[25][24], $hamming2[25][24]);
-            // dd($hamming1[24][25], $hamming2[24][25]);
+            
+            // dd($hamming1);
             //form the concordance matrix
             foreach ($alternative as $keyAlternative => $value) {
                 for ($i=0; $i < count($alternative); $i++) {
@@ -555,14 +564,17 @@
         function getRanking($matrixGlobalZ) 
         {
             $ranking = array();
+            $unsorted = array();
 
+            //determines the value of an alternative from global z matrix
             foreach ($matrixGlobalZ as $key => $value) {
-                $unsorted[$key] = array("value" => array_sum($value));
+                array_push($unsorted, array_sum($value));
             }
-            // dd($unsorted);
+            //sort the alternatives by the values
             arsort($unsorted);
+            //get top 5 alternatives
             $ranking = array_slice($unsorted,0,5, true);
-
+        
             return $ranking;
         }
 

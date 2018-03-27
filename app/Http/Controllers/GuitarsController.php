@@ -26,15 +26,29 @@ class GuitarsController extends BaseController
         
         //get linguistic variables from form
         $linguistics = [
-            $request->input('kualitas-kayu-bagian-body'),
-            $request->input('harga')
+            $request->input('harga'),
+            $request->input('kualitas-kayu-bagian-body')
         ];
-
+        
         //send to Fuzzy Electre Class
-        $data = new FuzzyElectre($guitars, $linguistics);
+        $fuzzyElectre = new FuzzyElectre($guitars, $linguistics);
         //get result from fuzzy electre class
-        dd($data->ranking);
+        $rank = $fuzzyElectre->ranking;
+        $guitars = array();
+        
+        //if ranking != not empty then get guitars from guitars table by rank index
+        if (!in_array(0, $rank)) {
+            foreach (array_keys($rank) as $key => $value) {
+                $guitars[$key] = Guitars::where('id', $value)->first();
+            }   
+        }
+        
         //parse data to view
+        $data = [
+            'guitars' => $guitars
+        ];
+        
+        return view('ranking', $data);
     }
 
     public function index() { 

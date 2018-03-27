@@ -107,12 +107,12 @@
         <section id="section-d" class="grid">
             <div class="box">
                 <h2 class="content-title">Terima Kasih kepada:</h2>
-                <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Mollitia saepe aliquam autem quia explicabo delectus
-                    error doloribus odit, quae corporis.</p>
+                <p> Semua pihak yang turut membantu dalam pengembangan website ini terutama pada Rimuljo Hendradi dan Endah Purwanti selaku dosen pembimbing skripsi serta pada
+                    Engkos Perkasa untuk pengetahuan dan pengalaman lutherie gitar akustik steel-string.
+                </p>
             </div>
             <div class="box">
-                <p>Website ini dibangun sebagai bagian dari tugas skripsi. 
-                </p>
+                <p>Website ini dibangun sebagai bagian dari tugas skripsi. </p>
             </div>
         </section>
     </main>
