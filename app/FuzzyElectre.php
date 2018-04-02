@@ -31,7 +31,6 @@
             }               
             
             $fuzzyDecisionMatrix = $this->fuzzyDecicionMatrix($dataA, $dataB);
-            
             $normalizedFuzzyDecisionMatrix = $this->normalizedFuzzyDesicionMatrix($fuzzyDecisionMatrix,$dataA, $dataB);
             $weightedNormalizedFuzzyDecisionMatrix = $this->weightedNormalizedFuzzyDecisionMatrix($normalizedFuzzyDecisionMatrix, $criteriaWeight);
             $concordanceMatrix = $this->concordanceMatrix($weightedNormalizedFuzzyDecisionMatrix, $dataA, $dataB);
@@ -41,9 +40,7 @@
             $matrixBooleanB = $this->matrixBooleanB($concordanceMatrix, $concordanceLevel);
             $matrixBooleanH = $this->matrixBooleanH($discordanceMatrix, $discordanceLevel);
             $matriksGlobalZ = $this->matrixGlobalZ($matrixBooleanB, $matrixBooleanH);
-            $this->ranking = $this->getRanking($matriksGlobalZ);
-
-            
+            $this->ranking = $this->getRanking($matriksGlobalZ);            
         }
 
         /**tfnRating
@@ -304,7 +301,7 @@
             foreach ($criteriaWeight as $key => $value) {
                 $criteriaWeight[$key] = $this->tfnCriteria($value);
             }
-        
+            
             //calculate hamming distance of alternatives in all criteria
             foreach ($alternative as $keyAlternative => $valueAlternative) {
                 for ($i=0; $i < count($alternative); $i++) { 
@@ -318,7 +315,6 @@
                 }
             }
             
-            // dd($hamming1);
             //form the concordance matrix
             foreach ($alternative as $keyAlternative => $value) {
                 for ($i=0; $i < count($alternative); $i++) {
@@ -513,7 +509,6 @@
         {
             $matrixBooleanH = array();
             
-            // dd($discordanceMatrix[26][39]);
             foreach ($discordanceMatrix as $discordanceKey => $discordanceValue) {
                 foreach ($discordanceValue as $alternativeKey => $alternativeValue) {
                     if ($alternativeValue === "-") {
@@ -576,6 +571,36 @@
             $ranking = array_slice($unsorted,0,5, true);
         
             return $ranking;
+        }
+
+        function cekDistance($inputL1, $inputM1, $inputU2, $inputL2, $inputM2, $inputU1){
+
+            if (($inputL1<=$inputL2) && ($inputM1<=$inputM2) && ($inputU1<=$inputU2)){
+                $l 	= abs(abs($inputU1-$inputL2)*(abs($inputU1-$inputL2)/abs($inputM2-$inputL2+$inputU1-$inputM1)))/2;
+                $l1 = 0;
+                $value = 1;
+            }
+            else{
+                $l1 = abs(abs($inputU1-$inputL2)*(abs($inputU1-$inputL2)/abs($inputM2-$inputL2+$inputU1-$inputM1)))/2;
+                $l 	= 0;
+                $value = 0;
+            }
+        return array('kanan'=>$l, 'kiri'=>$l1, 'nilai'=>$value);
+        }
+
+        function cekMatriksConcordance($inputL1, $inputM1, $inputU1, $inputL2, $inputM2, $inputU2){
+            if (($inputL1>=$inputL2) && ($inputM1>=$inputM2) && ($inputU1>=$inputU2)){
+                $l = abs(abs($inputU1-$inputL2)*(abs($inputU1-$inputL2)/abs($inputM2-$inputL2+$inputU1-$inputM1)))/2;
+                $l1 = 0;
+                $value = 1;
+            }
+
+            else{
+                $l1 = abs(abs($inputU1-$inputL2)*(abs($inputU1-$inputL2)/abs($inputM2-$inputL2+$inputU1-$inputM1)))/2;
+                $l = 0;
+                $value = 0;
+            }
+        return array('kanan'=>$l, 'kiri'=>$l1, 'nilai'=>$value);
         }
 
     }

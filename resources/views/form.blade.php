@@ -21,10 +21,11 @@
             <div class="contact">
                 <h3>Masukkan tingkat kepentingan kriteria anda disini:</h3>
                 <form action="{{ url('/ranking') }}" method="POST">
-                    <input type="hidden" name="_token" value="{!! csrf_token() !!}">
+                    <input type="hidden" name="_token" value="{!! csrf_token() !!}">                    
+
                     <p class="full">
-                        <label>Kualitas Kayu Bagian Body</label>
-                        <select class="form-control" id="sel1" name="kualitas-kayu-bagian-body" required>
+                        <label>Harga yang Murah</label>
+                        <select class="form-control" id="sel1" name="harga" required>
                             <option value="very high">Sangat Penting</option>
                             <option value="high">Penting</option>
                             <option value="medium">Biasa Saja</option>
@@ -32,10 +33,10 @@
                             <option value="very low">Sangat Tidak Penting</option>
                         </select>
                     </p>
-                    
+
                     <p class="full">
-                        <label>Harga yang Murah</label>
-                        <select class="form-control" id="sel1" name="harga" required>
+                        <label>Kualitas Kayu Bagian Body</label>
+                        <select class="form-control" id="sel1" name="kualitas-kayu-bagian-body" required>
                             <option value="very high">Sangat Penting</option>
                             <option value="high">Penting</option>
                             <option value="medium">Biasa Saja</option>
