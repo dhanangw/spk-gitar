@@ -19,7 +19,7 @@ class GuitarsController extends BaseController
         return view('welcome');
     }
 
-    //the function below still needs fixed kriteria as parameters
+
     public function ranking(Request $request) { 
         //get guitars in the criteria range and set as array
         $guitars = Guitars::select('perf_rating_harga', 'perf_rating_kayu_body')->get()->toArray();
@@ -32,6 +32,7 @@ class GuitarsController extends BaseController
         
         //send to Fuzzy Electre Class
         $fuzzyElectre = new FuzzyElectre($guitars, $linguistics);
+
         //get result from fuzzy electre class
         $rank = $fuzzyElectre->ranking;
         $guitars = array();

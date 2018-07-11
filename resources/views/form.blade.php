@@ -9,7 +9,7 @@
 </head>
 <body>
     <div class="container">
-        <h1 class="brand"> SPK Gitar </h1>
+        <a href="{{ url('/') }}"><h1 class="brand"> SPK Gitar </h1></a>
         <div class="wrapper">
             <div class="company-info">
                 <h3>Cara Penggunaan:</h3>

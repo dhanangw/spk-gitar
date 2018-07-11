@@ -28,7 +28,7 @@ h1, h2, h3 {
 }
 
 table {
-    width: inherit;
+    max-width: auto;
     
 }
 
@@ -42,6 +42,10 @@ li {
 /*section a*/
 #section-a .content-wrap{
     padding: 0 1.5em;
+}
+
+#section-a .content-text{
+    max-width: auto;
 }
 
 #section-a {

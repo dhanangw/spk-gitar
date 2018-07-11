@@ -11,6 +11,7 @@
 <body>
     @if (empty($guitars))
     <h1>kami tidak dapat menemukan gitar akustik <span> steel-string </span> yang sesuai dengan masukan anda</h1>
+    <h1>silakan <a href="{{ url('/choose') }}">pilih</a> kembali dengan kombinasi tingkat kepentingan yang berbeda</h1>
     @else
     <h1>5 Pilihan gitar akustik <span> steel-string </span> yang sesuai dengan pilihan anda</h1>
     <div class="wrapper">
@@ -26,6 +27,7 @@
             </a>
             @endforeach
         </div>
+        <h3>Belum Sesuai? <a href="{{ url('/choose') }}">Pilih lagi.</a></h3>
     </div>
     @endif
 </body>

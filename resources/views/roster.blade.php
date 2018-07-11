@@ -9,7 +9,8 @@
     <title>Roster</title>
 </head>
 <body>
-    <h1>Pilihan Gitar Akustik <span> Steel-String </span></h1>
+    <a href="{{ url('/') }}"><h1>SPK Gitar</h1></a>
+    <h2>Pilihan Gitar Akustik <span> Steel-String </span></h2>
     <div class="wrapper">
         <div class="card-columns">
             @foreach ($guitars as $guitar)

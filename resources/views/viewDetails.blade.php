@@ -94,7 +94,7 @@
                         </tr>
                         <tr>
                             <td>Cutaway Type: </td>
-                            <td >{{$gitar -> cutaway_type}}} </td>
+                            <td >{{$gitar -> cutaway_type}} </td>
                         </tr>
                         <tr>
                             <td>Body Binding: </td>
@@ -237,9 +237,7 @@
 
     <!-- footer -->
     <footer id="main-footer">
-        <div>Back to
-            <a href="{{ redirect()->back() }}" target="_blank">List</a>
-        </div>
+        
     </footer>
 
     <!-- scripts -->

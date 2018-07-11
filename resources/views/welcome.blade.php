@@ -31,7 +31,7 @@
                 <h2 class="content-title">Sistem Pendukung Keputusan Pemilihan Steel-String Acoustic Guitar</h2>
                 <div class="content-text">
                     <p>Website ini dibangun untuk membantu menyelesaikan masalah pemilihan gitar akustik steel-string, yang dimana semakin lama semakin sulit karena harga gitar yang terus naik dan Produsen yang terus membuat lini produk baru.
-                    Website ini dibangun dengan memperhatikan pertimbangan Luthier dan Gitaris-gitaris serta mengaplikasikan metode perankingan mutakhir dalam proses pemilihannya</p>
+                    Website ini dibangun berdasarkan pertimbangan Pengrajin gitar akustik dan para gitaris profesional. Aplikasi ini menyajikan gitar yang sesuai dengan keinginan Anda.</p>
                 </div>
             </div>
         </section>

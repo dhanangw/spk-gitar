@@ -5,6 +5,16 @@
         private $dataA = array(); 
         private $dataB = array(); 
         public $ranking;
+        public $fuzzyDecisionMatrix;
+        public $normalizedFuzzyDecisionMatrix;
+        public $weightedNormalizedFuzzyDecisionMatrix;
+        public $concordanceMatrix;
+        public $concordanceLevel;
+        public $discordanceMatrix;
+        public $discordanceLevel;
+        public $matrixBooleanB;
+        public $matrixBooleanH;
+        public $matriksGlobalZ;
 
         /**constructor
          * initiate data by assign performanceRating and criteria to array
@@ -31,16 +41,27 @@
             }               
             
             $fuzzyDecisionMatrix = $this->fuzzyDecicionMatrix($dataA, $dataB);
+            file_put_contents('fuzzyDecisionMatrix.txt',print_r($fuzzyDecisionMatrix, true) , FILE_APPEND);
             $normalizedFuzzyDecisionMatrix = $this->normalizedFuzzyDesicionMatrix($fuzzyDecisionMatrix,$dataA, $dataB);
+            file_put_contents('normalizedFuzzyDecisionMatrix.txt',print_r($normalizedFuzzyDecisionMatrix, true) , FILE_APPEND);
             $weightedNormalizedFuzzyDecisionMatrix = $this->weightedNormalizedFuzzyDecisionMatrix($normalizedFuzzyDecisionMatrix, $criteriaWeight);
+            file_put_contents('weightedNormalizedFuzzyDecisionMatrix.txt',print_r($weightedNormalizedFuzzyDecisionMatrix, true) , FILE_APPEND);
             $concordanceMatrix = $this->concordanceMatrix($weightedNormalizedFuzzyDecisionMatrix, $dataA, $dataB);
+            file_put_contents('concordanceMatrix.txt',print_r($concordanceMatrix, true) , FILE_APPEND);
             $concordanceLevel = $this->concordanceLevel($concordanceMatrix);
+            file_put_contents('concordanceLevel.txt',print_r($concordanceLevel, true) , FILE_APPEND);
             $discordanceMatrix = $this->discordanceMatrix($weightedNormalizedFuzzyDecisionMatrix, $dataA, $dataB);
+            file_put_contents('discordanceMatrix.txt',print_r($discordanceMatrix, true) , FILE_APPEND);
             $discordanceLevel = $this->discordanceLevel($discordanceMatrix);
+            file_put_contents('discordanceLevel.txt',print_r($discordanceLevel, true) , FILE_APPEND);
             $matrixBooleanB = $this->matrixBooleanB($concordanceMatrix, $concordanceLevel);
+            file_put_contents('matrixBooleanB.txt',print_r($matrixBooleanB, true) , FILE_APPEND);
             $matrixBooleanH = $this->matrixBooleanH($discordanceMatrix, $discordanceLevel);
+            file_put_contents('matrixBooleanH.txt',print_r($matrixBooleanH, true) , FILE_APPEND);
             $matriksGlobalZ = $this->matrixGlobalZ($matrixBooleanB, $matrixBooleanH);
-            $this->ranking = $this->getRanking($matriksGlobalZ);            
+            file_put_contents('matriksGlobalZ.txt',print_r($matriksGlobalZ, true) , FILE_APPEND);
+            $this->ranking = $this->getRanking($matriksGlobalZ);
+            file_put_contents('ranking.txt',print_r($this->ranking, true) , FILE_APPEND);
         }
 
         /**tfnRating
@@ -137,6 +158,7 @@
         {   
             $fuzzyDecisionMatrix = array();
             //get fuzzy weight of criteria in tfn
+            
             for ($i=0; $i < count($performanceRating); $i++) { 
                 for ($j=0; $j < count($criteriaWeight); $j++) {     
                     $fuzzyDecisionMatrix[$i][$j] = $this->tfnRating($performanceRating[$i][$j]);
@@ -176,12 +198,12 @@
                 }
             }
             
-            //get highest element in tfn
+            //get highest element in highest tfn
             $maxFuzzyComponent = array();
             foreach ($maxTFN as $key => $value) {
                 $maxFuzzyComponent[$key] = max($maxTFN[$key]);
             }
-
+            
             //divide each fuzzy component in fuzzyDecisionMatrix with maxFuzzyComponent-
             //-for respective criteria
             $normalizedFuzzyDecisionMatrix = array();
@@ -262,7 +284,7 @@
             if (($alternative1[0] >= $alternative2[0]) && ($alternative1[1] >= $alternative2[1]) && ($alternative1[2] >= $alternative2[2])) {
                 if (($alternative1[0] == $alternative2[0]) && ($alternative1[1] == $alternative2[1]) && ($alternative1[2] == $alternative2[2])) {
                     //if 0-0 -> kiri and kanan value = 0
-                        $kanan = 0;
+                    $kanan = 0;
                     $kiri = 0;
                     $oo = "yes";
                     $concordanceSet = "no";
@@ -342,7 +364,6 @@
                     }
                 }
             }
-            
             return $concordanceMatrix ;
         }
 
@@ -572,37 +593,6 @@
         
             return $ranking;
         }
-
-        function cekDistance($inputL1, $inputM1, $inputU2, $inputL2, $inputM2, $inputU1){
-
-            if (($inputL1<=$inputL2) && ($inputM1<=$inputM2) && ($inputU1<=$inputU2)){
-                $l 	= abs(abs($inputU1-$inputL2)*(abs($inputU1-$inputL2)/abs($inputM2-$inputL2+$inputU1-$inputM1)))/2;
-                $l1 = 0;
-                $value = 1;
-            }
-            else{
-                $l1 = abs(abs($inputU1-$inputL2)*(abs($inputU1-$inputL2)/abs($inputM2-$inputL2+$inputU1-$inputM1)))/2;
-                $l 	= 0;
-                $value = 0;
-            }
-        return array('kanan'=>$l, 'kiri'=>$l1, 'nilai'=>$value);
-        }
-
-        function cekMatriksConcordance($inputL1, $inputM1, $inputU1, $inputL2, $inputM2, $inputU2){
-            if (($inputL1>=$inputL2) && ($inputM1>=$inputM2) && ($inputU1>=$inputU2)){
-                $l = abs(abs($inputU1-$inputL2)*(abs($inputU1-$inputL2)/abs($inputM2-$inputL2+$inputU1-$inputM1)))/2;
-                $l1 = 0;
-                $value = 1;
-            }
-
-            else{
-                $l1 = abs(abs($inputU1-$inputL2)*(abs($inputU1-$inputL2)/abs($inputM2-$inputL2+$inputU1-$inputM1)))/2;
-                $l = 0;
-                $value = 0;
-            }
-        return array('kanan'=>$l, 'kiri'=>$l1, 'nilai'=>$value);
-        }
-
     }
 
 
